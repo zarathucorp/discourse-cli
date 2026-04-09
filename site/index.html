@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>discourse-cli</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
       :root {
         --bg: #f6f1e8;
@@ -14,6 +20,8 @@
         --accent: #b45309;
         --accent-strong: #7c2d12;
         --shadow: 0 24px 80px rgba(52, 32, 6, 0.12);
+        --font-latin: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+        --font-korean: "Noto Serif KR", "Apple SD Gothic Neo", "Malgun Gothic", serif;
       }
 
       * {
@@ -22,12 +30,20 @@
 
       body {
         margin: 0;
-        font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+        font-family: var(--font-latin);
         color: var(--text);
         background:
           radial-gradient(circle at top left, rgba(245, 158, 11, 0.2), transparent 32%),
           radial-gradient(circle at bottom right, rgba(180, 83, 9, 0.18), transparent 28%),
           linear-gradient(180deg, #fbf7ef 0%, #f3eadb 100%);
+      }
+
+      .lang-ko,
+      .lang-ko button,
+      .lang-ko input,
+      .lang-ko textarea,
+      .lang-ko select {
+        font-family: var(--font-korean);
       }
 
       a {
@@ -188,7 +204,7 @@
           <a class="button primary" href="https://github.com/zarathucorp/discourse-cli">Repository</a>
           <a class="button" href="#quickstart">Quickstart</a>
           <a class="button" href="#english">English</a>
-          <a class="button" href="#korean">한국어</a>
+          <a class="button lang-ko" href="#korean">한국어</a>
         </div>
       </section>
 
@@ -229,7 +245,7 @@ discourse-cli api list --search topic
 discourse-cli api run getUser --path username=jwheo</code></pre>
         </article>
 
-        <article class="card" id="korean">
+        <article class="card lang-ko" id="korean">
           <h2>한국어</h2>
           <div class="split">
             <div>
@@ -266,7 +282,7 @@ discourse-cli api run getUser --path username=jwheo</code></pre>
         </article>
       </section>
 
-      <section class="card" id="quickstart">
+      <section class="card lang-ko" id="quickstart">
         <h2>Quickstart / 빠른 시작</h2>
         <pre><code>npm install
 npm run build
@@ -288,7 +304,7 @@ discourse-cli api run getUser --path username=jwheo</code></pre>
           documented API surface generically and keeps a direct fallback for endpoints that do not
           map cleanly into curated commands.
         </p>
-        <p>
+        <p class="lang-ko">
           현재는 사람이 읽기 쉬운 전용 명령 세트보다 범용 API 실행에 초점이 있습니다. 그래도
           카테고리 조회, 토픽 읽기, 댓글 작성, 파일 업로드, 첨부 다운로드 같은 실제 운영 흐름은
           이미 검증 가능한 수준까지 붙어 있습니다.
