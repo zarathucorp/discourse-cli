@@ -32,7 +32,7 @@ discourse-cli --help
 
 ## 문서
 
-- [GitHub Pages](/Users/zarathu/projects/discourse-cli/site/index.html)
+- [GitHub Pages](https://zarathucorp.github.io/discourse-cli/)
 - [Quickstart](docs/QUICKSTART.md)
 - [Usage](docs/USAGE.md)
 - [Project Plan](docs/PROJECT_PLAN.md)
