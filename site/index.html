@@ -263,30 +263,6 @@ discourse-cli api run getUser --path username=jwheo</code></pre>
 
         <section class="grid">
           <article class="card">
-            <h2>Posting Examples</h2>
-            <p>Use a Markdown file for long drafts, or pass inline text for short posts.</p>
-            <h3>Markdown File</h3>
-            <pre><code># post.md
-# Long Post Draft
-
-Body text here.
-
-![diagram](./images/diagram.png)
-
-[report](./files/report.xlsx)
-
-discourse-cli posts create \
-  --title 'Long Post Draft' \
-  --category 4 \
-  --raw-file ./post.md</code></pre>
-            <h3>Inline Raw Body</h3>
-            <pre><code>discourse-cli posts create \
-  --title 'Quick Note' \
-  --category 4 \
-  --raw 'hello from discourse-cli'</code></pre>
-          </article>
-
-          <article class="card">
             <h2>What It Does</h2>
             <div class="split">
               <div>
@@ -309,6 +285,30 @@ discourse-cli posts create \
                 </ul>
               </div>
             </div>
+          </article>
+
+          <article class="card">
+            <h2>Posting Examples</h2>
+            <p>Use a Markdown file for long drafts, or pass inline text for short posts.</p>
+            <h3>Markdown File</h3>
+            <pre><code># post.md
+# Long Post Draft
+
+Body text here.
+
+![diagram](./images/diagram.png)
+
+[report](./files/report.xlsx)
+
+discourse-cli posts create \
+  --title 'Long Post Draft' \
+  --category 4 \
+  --raw-file ./post.md</code></pre>
+            <h3>Inline Raw Body</h3>
+            <pre><code>discourse-cli posts create \
+  --title 'Quick Note' \
+  --category 4 \
+  --raw 'hello from discourse-cli'</code></pre>
           </article>
         </section>
 
@@ -343,30 +343,6 @@ discourse-cli api run getUser --path username=jwheo</code></pre>
 
         <section class="grid">
           <article class="card">
-            <h2>포스트 예제</h2>
-            <p>긴 글은 마크다운 파일로 올리고, 짧은 글은 인라인 본문으로 바로 올리면 된다.</p>
-            <h3>마크다운 파일로 올리기</h3>
-            <pre><code># post.md
-# 긴 글 테스트
-
-본문입니다.
-
-![diagram](./images/diagram.png)
-
-[report](./files/report.xlsx)
-
-discourse-cli posts create \
-  --title '긴 글 테스트' \
-  --category 4 \
-  --raw-file ./post.md</code></pre>
-            <h3>그냥 바로 올리기</h3>
-            <pre><code>discourse-cli posts create \
-  --title '짧은 글 테스트' \
-  --category 4 \
-  --raw 'hello from discourse-cli'</code></pre>
-          </article>
-
-          <article class="card">
             <h2>무엇을 하나</h2>
             <div class="split">
               <div>
@@ -389,6 +365,30 @@ discourse-cli posts create \
                 </ul>
               </div>
             </div>
+          </article>
+
+          <article class="card">
+            <h2>포스트 예제</h2>
+            <p>긴 글은 마크다운 파일로 올리고, 짧은 글은 인라인 본문으로 바로 올리면 된다.</p>
+            <h3>마크다운 파일로 올리기</h3>
+            <pre><code># post.md
+# 긴 글 테스트
+
+본문입니다.
+
+![diagram](./images/diagram.png)
+
+[report](./files/report.xlsx)
+
+discourse-cli posts create \
+  --title '긴 글 테스트' \
+  --category 4 \
+  --raw-file ./post.md</code></pre>
+            <h3>그냥 바로 올리기</h3>
+            <pre><code>discourse-cli posts create \
+  --title '짧은 글 테스트' \
+  --category 4 \
+  --raw 'hello from discourse-cli'</code></pre>
           </article>
         </section>
 
