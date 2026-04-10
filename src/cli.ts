@@ -18,6 +18,7 @@ import {
   renderOperationDescription,
   resolveOpenApiPath,
 } from "./request.js";
+import { runPostsCreate, runPostsUpdate } from "./posts.js";
 
 function printHelp(): void {
   console.log(`Usage:
@@ -26,6 +27,8 @@ function printHelp(): void {
   discourse-cli api describe <operationId>
   discourse-cli api run <operationId> [request options]
   discourse-cli api call <METHOD> <path> [request options]
+  discourse-cli posts create [post options]
+  discourse-cli posts update [post options]
   discourse-cli attachment download <url> [--output <path>]
 
 Common request options:
@@ -42,6 +45,16 @@ Common request options:
   --form key=value
   --file field=/path/to/file
   --output <path>
+
+Post options:
+  --title <title>
+  --category <id>
+  --topic-id <id>
+  --post-id <id>
+  --raw <text>
+  --raw-file <path>
+  --edit-reason <text>
+  --bypass-bump
 
 Environment:
   DISCOURSE_BASE_URL / DISCOURSE_URL
@@ -216,6 +229,16 @@ async function main(): Promise<void> {
       throw new Error("Missing attachment URL");
     }
     await downloadAttachment(args, url);
+    return;
+  }
+
+  if (resource === "posts" && action === "create") {
+    await runPostsCreate(args);
+    return;
+  }
+
+  if (resource === "posts" && action === "update") {
+    await runPostsUpdate(args);
     return;
   }
 

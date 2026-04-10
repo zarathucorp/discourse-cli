@@ -11,6 +11,7 @@
 - `api describe`
 - `api run`
 - `api call`
+- `posts create`
 - `attachment download`
 
 이 프로젝트는 아직 모든 기능을 사람이 읽기 쉬운 전용 서브커맨드로 나누지는 않았다.
@@ -73,6 +74,8 @@ discourse-cli api list
 discourse-cli api describe <operationId>
 discourse-cli api run <operationId> [request options]
 discourse-cli api call <METHOD> <path> [request options]
+discourse-cli posts create [post options]
+discourse-cli posts update [post options]
 discourse-cli attachment download <url> [--output <path>]
 ```
 
@@ -91,6 +94,89 @@ discourse-cli attachment download <url> [--output <path>]
 - `--form key=value`
 - `--file field=/absolute/path/to/file`
 - `--output <path>`
+
+## 포스트 작성
+
+긴 글을 먼저 마크다운 파일로 작성한 뒤 그대로 포스트할 수 있다.
+
+### 새 토픽 생성
+
+```bash
+discourse-cli posts create \
+  --title '긴 글 테스트' \
+  --category 4 \
+  --raw-file ./post.md
+```
+
+### 기존 토픽에 답글 작성
+
+```bash
+discourse-cli posts create \
+  --topic-id 261 \
+  --raw-file ./reply.md
+```
+
+### 기존 포스트 수정
+
+```bash
+discourse-cli posts update \
+  --post-id 395 \
+  --raw-file ./edited.md \
+  --edit-reason 'fix attachment block'
+```
+
+### 인라인 본문 사용
+
+```bash
+discourse-cli posts create \
+  --title '짧은 글 테스트' \
+  --category 4 \
+  --raw 'hello from discourse-cli'
+```
+
+`--raw-file`는 파일 디렉터리를 기준으로 로컬 링크를 해석한다.
+`--raw`는 현재 작업 디렉터리를 기준으로 로컬 링크를 해석한다.
+
+지원하는 로컬 마크다운 링크:
+
+- 이미지: `![diagram](./images/diagram.png)`
+- 일반 첨부: `[report](./files/report.xlsx)`
+- 오디오: `[voice](./audio/sample.mp3)`
+- 비디오: `[demo](./video/demo.mp4)`
+
+포스트 직전에 로컬 파일을 `/uploads.json`으로 업로드한 뒤, Discourse 웹 Composer가 넣는 형태로 본문을 치환한다.
+
+예를 들어 아래 마크다운:
+
+```md
+본문입니다.
+
+![diagram](./images/diagram.png)
+
+[report](./files/report.xlsx)
+```
+
+는 업로드 후 아래와 비슷한 raw로 전송된다.
+
+```md
+본문입니다.
+
+![diagram|690x220](upload://token.png)
+
+[report.xlsx|attachment](upload://token.xlsx) (4.8 KB)
+```
+
+현재 범위:
+
+- 인라인 Markdown image/link syntax만 처리한다.
+- fenced code block과 inline code 안의 링크는 건드리지 않는다.
+- 이미 업로드된 `upload://...`, `/uploads/...`, `http(s)://...` 링크는 그대로 둔다.
+
+수정 전용 옵션:
+
+- `--post-id <id>`
+- `--edit-reason <text>`
+- `--bypass-bump`
 
 ## OpenAPI 동기화
 

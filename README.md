@@ -8,6 +8,7 @@ Discourse OpenAPI 기반 범용 CLI다.
 - API operation 목록 조회
 - `operationId` 기반 실행
 - raw API 호출
+- 마크다운 파일 기반 포스트 생성
 - 인증된 첨부 다운로드
 
 ## 요구사항
@@ -67,3 +68,5 @@ discourse-cli api run getUser --path username=jwheo
 
 - 현재는 사람이 읽기 쉬운 전용 명령보다 범용 API 실행에 초점이 있다.
 - 일부 첨부파일은 포스트가 보여도 인증 없이는 다운로드되지 않을 수 있다.
+- `posts create --raw-file`는 마크다운 안의 로컬 파일 링크를 업로드하고 웹 Composer와 같은 `upload://...` syntax로 치환한다.
+- `posts update --post-id --raw-file`는 기존 포스트 수정에도 같은 치환 규칙을 적용한다.
