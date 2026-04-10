@@ -109,6 +109,16 @@
         color: white;
       }
 
+      .button.toggle[aria-pressed="true"] {
+        border-color: var(--text);
+        background: var(--text);
+        color: white;
+      }
+
+      [data-lang][hidden] {
+        display: none !important;
+      }
+
       .grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -195,21 +205,35 @@
       <section class="hero">
         <div class="eyebrow">Discourse API Wrapper</div>
         <h1>discourse-cli</h1>
-        <p class="lead">
+        <p class="lead" data-lang="en">
           A generic CLI for documented Discourse APIs. It syncs the official OpenAPI spec,
           executes operations by <code>operationId</code>, and still lets you drop down to raw
           path calls when you need full coverage.
         </p>
+        <p class="lead lang-ko" data-lang="ko">
+          Discourse 공식 OpenAPI를 기준으로 동작하는 범용 CLI다. <code>operationId</code>
+          기반 실행과 raw path 호출을 함께 지원해서, 문서화된 흐름과 예외 케이스를 한 도구에서
+          처리할 수 있다.
+        </p>
         <div class="cta-row">
           <a class="button primary" href="https://github.com/zarathucorp/discourse-cli">Repository</a>
           <a class="button" href="#quickstart">Quickstart</a>
-          <a class="button" href="#english">English</a>
-          <a class="button lang-ko" href="#korean">한국어</a>
+          <button class="button toggle" type="button" data-lang-button="en" aria-pressed="false">
+            English
+          </button>
+          <button
+            class="button toggle lang-ko"
+            type="button"
+            data-lang-button="ko"
+            aria-pressed="false"
+          >
+            한국어
+          </button>
         </div>
       </section>
 
       <section class="grid">
-        <article class="card" id="english">
+        <article class="card" id="english" data-lang="en">
           <h2>English</h2>
           <div class="split">
             <div>
@@ -246,7 +270,7 @@ discourse-cli api list --search topic
 discourse-cli api run getUser --path username=jwheo</code></pre>
         </article>
 
-        <article class="card lang-ko" id="korean">
+        <article class="card lang-ko" id="korean" data-lang="ko">
           <h2>한국어</h2>
           <div class="split">
             <div>
@@ -284,9 +308,21 @@ discourse-cli api run getUser --path username=jwheo</code></pre>
         </article>
       </section>
 
-      <section class="card lang-ko" id="quickstart">
-        <h2>Quickstart / 빠른 시작</h2>
-        <pre><code>npm install
+      <section class="card" id="quickstart">
+        <h2 data-lang="en">Quickstart</h2>
+        <h2 class="lang-ko" data-lang="ko">빠른 시작</h2>
+        <pre data-lang="en"><code>npm install
+npm run build
+npm link
+
+export DISCOURSE_BASE_URL=https://community.example.com
+export DISCOURSE_API_KEY=your_api_key
+export DISCOURSE_API_USERNAME=your_username
+
+discourse-cli spec sync
+discourse-cli api list --search topic
+discourse-cli api run getUser --path username=jwheo</code></pre>
+        <pre class="lang-ko" data-lang="ko"><code>npm install
 npm run build
 npm link
 
@@ -300,7 +336,7 @@ discourse-cli api run getUser --path username=jwheo</code></pre>
       </section>
 
       <section class="grid">
-        <article class="card">
+        <article class="card" data-lang="en">
           <h2>Markdown-First Posting</h2>
           <p>
             Draft long posts locally, then send them with <code>posts create</code> or
@@ -322,7 +358,7 @@ discourse-cli posts create \
   --raw-file ./post.md</code></pre>
         </article>
 
-        <article class="card lang-ko">
+        <article class="card lang-ko" data-lang="ko">
           <h2>마크다운 파일로 작성</h2>
           <p>
             긴 글은 로컬 마크다운 파일로 먼저 쓴 뒤 <code>posts create</code> 또는
@@ -346,21 +382,71 @@ discourse-cli posts update \
       </section>
 
       <section class="card">
-        <h2>Current Notes</h2>
-        <p>
+        <h2 data-lang="en">Current Notes</h2>
+        <h2 class="lang-ko" data-lang="ko">현재 참고사항</h2>
+        <p data-lang="en">
           This project does not handcraft every Discourse command yet. Instead, it exposes the
           documented API surface generically and keeps a direct fallback for endpoints that do not
           map cleanly into curated commands.
         </p>
-        <p class="lang-ko">
+        <p class="lang-ko" data-lang="ko">
           현재는 사람이 읽기 쉬운 전용 명령 세트보다 범용 API 실행에 초점이 있습니다. 그래도
           카테고리 조회, 토픽 읽기, 댓글 작성, 파일 업로드, 첨부 다운로드 같은 실제 운영 흐름은
           이미 검증 가능한 수준까지 붙어 있습니다.
         </p>
-        <div class="footer">
+        <div class="footer" data-lang="en">
           Built for fast Discourse automation, scripting, and operator workflows.
+        </div>
+        <div class="footer lang-ko" data-lang="ko">
+          Discourse 자동화, 운영 스크립트, 긴 글 작성 흐름을 빠르게 검증하기 위한 도구다.
         </div>
       </section>
     </main>
+    <script>
+      (() => {
+        const defaultLanguage = (navigator.language || "").toLowerCase().startsWith("ko")
+          ? "ko"
+          : "en";
+        const buttons = Array.from(document.querySelectorAll("[data-lang-button]"));
+        const elements = Array.from(document.querySelectorAll("[data-lang]"));
+
+        const setLanguage = (language) => {
+          const nextLanguage = language === "ko" ? "ko" : "en";
+
+          // Keep a single visible language so the page matches the selected mode.
+          elements.forEach((element) => {
+            element.hidden = element.dataset.lang !== nextLanguage;
+          });
+
+          buttons.forEach((button) => {
+            button.setAttribute(
+              "aria-pressed",
+              button.dataset.langButton === nextLanguage ? "true" : "false",
+            );
+          });
+
+          document.documentElement.lang = nextLanguage;
+
+          try {
+            window.localStorage.setItem("discourse-cli-language", nextLanguage);
+          } catch (error) {
+            console.debug("Unable to persist selected language", error);
+          }
+        };
+
+        buttons.forEach((button) => {
+          button.addEventListener("click", () => {
+            setLanguage(button.dataset.langButton);
+          });
+        });
+
+        try {
+          setLanguage(window.localStorage.getItem("discourse-cli-language") || defaultLanguage);
+        } catch (error) {
+          console.debug("Unable to read persisted language", error);
+          setLanguage(defaultLanguage);
+        }
+      })();
+    </script>
   </body>
 </html>
