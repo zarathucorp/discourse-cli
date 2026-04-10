@@ -145,6 +145,38 @@ discourse-cli api run listCategoryTopics \
 
 ## 자주 쓰는 예제
 
+### 마크다운 파일로 새 토픽 작성
+
+먼저 `post.md`를 작성한다.
+
+```md
+# 긴 글 테스트
+
+본문입니다.
+
+![diagram](./images/diagram.png)
+
+[report](./files/report.xlsx)
+```
+
+그다음 새 토픽으로 올린다.
+
+```bash
+discourse-cli posts create \
+  --title '긴 글 테스트' \
+  --category 4 \
+  --raw-file ./post.md
+```
+
+### 마크다운 파일로 기존 포스트 수정
+
+```bash
+discourse-cli posts update \
+  --post-id 395 \
+  --raw-file ./post.md \
+  --edit-reason 'revise markdown draft'
+```
+
 ### 사용자 조회
 
 ```bash
@@ -165,7 +197,7 @@ discourse-cli api run search \
 discourse-cli api call GET /t/261.json
 ```
 
-### 댓글 작성
+### Raw 댓글 작성
 
 ```bash
 discourse-cli api call POST /posts.json \
@@ -173,7 +205,7 @@ discourse-cli api call POST /posts.json \
   --body raw='hello from discourse-cli'
 ```
 
-### 댓글 수정
+### Raw 댓글 수정
 
 ```bash
 discourse-cli api call PUT /posts/392.json \

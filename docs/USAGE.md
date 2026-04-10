@@ -12,6 +12,7 @@
 - `api run`
 - `api call`
 - `posts create`
+- `posts update`
 - `attachment download`
 
 이 프로젝트는 아직 모든 기능을 사람이 읽기 쉬운 전용 서브커맨드로 나누지는 않았다.
@@ -99,6 +100,20 @@ discourse-cli attachment download <url> [--output <path>]
 
 긴 글을 먼저 마크다운 파일로 작성한 뒤 그대로 포스트할 수 있다.
 
+### 마크다운 파일 예시
+
+예시 `post.md`:
+
+```md
+# 긴 글 테스트
+
+본문입니다.
+
+![diagram](./images/diagram.png)
+
+[report](./files/report.xlsx)
+```
+
 ### 새 토픽 생성
 
 ```bash
@@ -123,6 +138,25 @@ discourse-cli posts update \
   --post-id 395 \
   --raw-file ./edited.md \
   --edit-reason 'fix attachment block'
+```
+
+위 예시는 보통 아래처럼 먼저 파일을 만든 뒤 실행한다.
+
+```bash
+cat > edited.md <<'EOF'
+# 긴 글 테스트
+
+본문을 수정합니다.
+
+![diagram](./images/diagram.png)
+
+[report](./files/report.xlsx)
+EOF
+
+discourse-cli posts update \
+  --post-id 395 \
+  --raw-file ./edited.md \
+  --edit-reason 'revise markdown draft'
 ```
 
 ### 인라인 본문 사용

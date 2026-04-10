@@ -8,7 +8,7 @@ Discourse OpenAPI 기반 범용 CLI다.
 - API operation 목록 조회
 - `operationId` 기반 실행
 - raw API 호출
-- 마크다운 파일 기반 포스트 생성
+- 마크다운 파일 기반 포스트 생성 및 수정
 - 인증된 첨부 다운로드
 
 ## 요구사항
@@ -63,6 +63,42 @@ discourse-cli api run getUser --path username=jwheo
 - [Quickstart](docs/QUICKSTART.md)
 - [Usage](docs/USAGE.md)
 - [Project Plan](docs/PROJECT_PLAN.md)
+
+## 마크다운 파일로 포스트 작성
+
+긴 글은 먼저 로컬 마크다운 파일로 작성한 뒤 올리는 편이 안전하다.
+
+예시 `post.md`:
+
+```md
+# 긴 글 테스트
+
+본문입니다.
+
+![diagram](./images/diagram.png)
+
+[report](./files/report.xlsx)
+```
+
+새 토픽 생성:
+
+```bash
+discourse-cli posts create \
+  --title '긴 글 테스트' \
+  --category 4 \
+  --raw-file ./post.md
+```
+
+기존 포스트 수정:
+
+```bash
+discourse-cli posts update \
+  --post-id 395 \
+  --raw-file ./post.md \
+  --edit-reason 'revise markdown draft'
+```
+
+`--raw-file`를 쓰면 로컬 이미지와 첨부 링크를 먼저 업로드한 뒤, Discourse 웹 Composer와 같은 `upload://...` syntax로 치환해서 전송한다.
 
 ## 참고
 
