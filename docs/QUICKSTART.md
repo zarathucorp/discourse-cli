@@ -7,9 +7,10 @@
 
 지원 실행 방식:
 
-- 로컬 실행: `node dist/cli.js ...`
+- 기본 사용: 글로벌 CLI `discourse-cli ...`
 - 글로벌 링크: `npm link`
 - 글로벌 설치: `npm install -g <local-path>`
+- 로컬 fallback: `node dist/cli.js ...`
 
 주의:
 
@@ -42,36 +43,36 @@ npm -v
 ### macOS
 
 ```bash
-cd /path/to/discourse-cli
-npm install
-npm run build
-```
-
-### Linux
-
-```bash
-cd /path/to/discourse-cli
-npm install
-npm run build
-```
-
-## 글로벌 사용
-
-### 방법 1: npm link
-
-개발 중에는 이 방식이 가장 단순하다.
-
-#### macOS
-
-```bash
-cd /path/to/discourse-cli
+git clone https://github.com/zarathucorp/discourse-cli.git
+cd discourse-cli
 npm install
 npm run build
 npm link
 discourse-cli --help
 ```
 
-#### Linux
+### Linux
+
+```bash
+git clone https://github.com/zarathucorp/discourse-cli.git
+cd discourse-cli
+npm install
+npm run build
+npm link
+discourse-cli --help
+```
+
+글로벌 명령을 만들 수 없는 환경이면 아래처럼 로컬 실행으로 점검한다.
+
+```bash
+node dist/cli.js --help
+```
+
+## 글로벌 사용
+
+### 방법 1: npm link
+
+개발 중에는 이 방식이 기본이다.
 
 ```bash
 cd /path/to/discourse-cli
@@ -84,18 +85,6 @@ discourse-cli --help
 ### 방법 2: 로컬 경로를 글로벌 설치
 
 빌드 결과가 있는 상태에서 설치한다.
-
-#### macOS
-
-```bash
-cd /path/to/discourse-cli
-npm install
-npm run build
-npm install -g /path/to/discourse-cli
-discourse-cli --help
-```
-
-#### Linux
 
 ```bash
 cd /path/to/discourse-cli
@@ -225,6 +214,12 @@ discourse-cli attachment download \
 
 - 해당 사이트에서 route가 비활성화되었거나 플러그인이 빠졌을 수 있음
 - OpenAPI 문서에 있어도 실제 사이트에서 없을 수 있음
+
+### 로컬 실행과 글로벌 실행 중 무엇을 써야 하나
+
+- 기본은 `discourse-cli ...`로 쓰고, 개발 중에는 보통 `npm link`가 가장 단순함
+- 특정 경로의 빌드 결과를 고정해서 쓰고 싶으면 `npm install -g /path/to/discourse-cli`가 명시적임
+- 글로벌 명령을 만들 수 없는 환경에서만 `node dist/cli.js ...`를 fallback으로 사용함
 
 ## 다음 문서
 

@@ -18,16 +18,42 @@ Discourse OpenAPI 기반 범용 CLI다.
 ## 빠른 시작
 
 ```bash
+git clone https://github.com/zarathucorp/discourse-cli.git
+cd discourse-cli
 npm install
 npm run build
+npm link
+discourse-cli --help
+```
+
+기본 사용 방식은 글로벌 CLI로 `discourse-cli`를 실행하는 것이다.
+
+고정된 글로벌 설치가 더 맞는 환경이면 아래처럼 설치할 수 있다.
+
+```bash
+npm install -g /absolute/path/to/discourse-cli
+discourse-cli --help
+```
+
+글로벌 명령을 만들 수 없는 환경이면 저장소 안에서 직접 실행한다.
+
+```bash
 node dist/cli.js --help
 ```
 
-글로벌로도 사용할 수 있다.
+인증은 환경변수로 주는 방식을 권장한다.
 
 ```bash
-npm link
-discourse-cli --help
+export DISCOURSE_BASE_URL=https://community.dev.zarathu.com
+export DISCOURSE_API_KEY=your_api_key
+export DISCOURSE_API_USERNAME=your_api_username
+```
+
+첫 점검은 읽기 전용 호출부터 시작하는 편이 안전하다.
+
+```bash
+discourse-cli spec sync
+discourse-cli api run getUser --path username=jwheo
 ```
 
 ## 문서

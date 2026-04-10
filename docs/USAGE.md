@@ -19,22 +19,22 @@
 ## 설치
 
 ```bash
-cd /path/to/discourse-cli
+git clone https://github.com/zarathucorp/discourse-cli.git
+cd discourse-cli
 npm install
 npm run build
-```
-
-글로벌로 쓰려면 아래 둘 중 하나를 사용한다.
-
-```bash
 npm link
 discourse-cli --help
 ```
+
+기본 사용은 글로벌 CLI다. 고정된 글로벌 설치가 더 맞는 환경이면 아래를 사용한다.
 
 ```bash
 npm install -g /path/to/discourse-cli
 discourse-cli --help
 ```
+
+글로벌 명령을 만들 수 없는 환경에서만 문서의 `discourse-cli` 예시를 `node dist/cli.js`로 바꿔서 실행하면 된다.
 
 ## 인증
 
@@ -68,12 +68,12 @@ export DISCOURSE_USER_API_CLIENT_ID=your_client_id
 ## 명령 구조
 
 ```bash
-node dist/cli.js spec sync
-node dist/cli.js api list
-node dist/cli.js api describe <operationId>
-node dist/cli.js api run <operationId> [request options]
-node dist/cli.js api call <METHOD> <path> [request options]
-node dist/cli.js attachment download <url> [--output <path>]
+discourse-cli spec sync
+discourse-cli api list
+discourse-cli api describe <operationId>
+discourse-cli api run <operationId> [request options]
+discourse-cli api call <METHOD> <path> [request options]
+discourse-cli attachment download <url> [--output <path>]
 ```
 
 ## 공통 옵션
@@ -97,7 +97,7 @@ node dist/cli.js attachment download <url> [--output <path>]
 공식 OpenAPI 문서를 로컬 캐시에 저장한다.
 
 ```bash
-node dist/cli.js spec sync
+discourse-cli spec sync
 ```
 
 기본 캐시 위치:
@@ -109,7 +109,7 @@ node dist/cli.js spec sync
 다른 파일로 저장:
 
 ```bash
-node dist/cli.js spec sync --spec-file /tmp/discourse-openapi.json
+discourse-cli spec sync --spec-file /tmp/discourse-openapi.json
 ```
 
 ## API 목록 조회
@@ -117,25 +117,25 @@ node dist/cli.js spec sync --spec-file /tmp/discourse-openapi.json
 전체 operation 목록:
 
 ```bash
-node dist/cli.js api list
+discourse-cli api list
 ```
 
 검색:
 
 ```bash
-node dist/cli.js api list --search upload
+discourse-cli api list --search upload
 ```
 
 메서드 필터:
 
 ```bash
-node dist/cli.js api list --method GET
+discourse-cli api list --method GET
 ```
 
 태그 필터:
 
 ```bash
-node dist/cli.js api list --tag uploads
+discourse-cli api list --tag uploads
 ```
 
 ## API 설명 보기
@@ -143,7 +143,7 @@ node dist/cli.js api list --tag uploads
 예:
 
 ```bash
-node dist/cli.js api describe createUpload
+discourse-cli api describe createUpload
 ```
 
 출력에는 아래 정보가 포함된다.
@@ -163,7 +163,7 @@ node dist/cli.js api describe createUpload
 ### 카테고리 토픽 조회
 
 ```bash
-node dist/cli.js api run listCategoryTopics \
+discourse-cli api run listCategoryTopics \
   --path slug=asha-test \
   --path id=18
 ```
@@ -171,21 +171,21 @@ node dist/cli.js api run listCategoryTopics \
 ### 사용자 조회
 
 ```bash
-node dist/cli.js api run getUser \
+discourse-cli api run getUser \
   --path username=jwheo
 ```
 
 ### 검색
 
 ```bash
-node dist/cli.js api run search \
+discourse-cli api run search \
   --query q=test
 ```
 
 ### 파일 업로드
 
 ```bash
-node dist/cli.js api run createUpload \
+discourse-cli api run createUpload \
   --form type=composer \
   --form synchronous=true \
   --file file=/absolute/path/to/file.txt
@@ -198,13 +198,13 @@ OpenAPI operationId를 몰라도 path를 알면 직접 호출할 수 있다.
 ### GET 호출
 
 ```bash
-node dist/cli.js api call GET /categories.json
+discourse-cli api call GET /categories.json
 ```
 
 ### POST 호출
 
 ```bash
-node dist/cli.js api call POST /posts.json \
+discourse-cli api call POST /posts.json \
   --body topic_id=261 \
   --body raw='CLI write path test reply'
 ```
