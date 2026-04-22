@@ -10,6 +10,13 @@ import {
 } from "./args.js";
 import { buildAuthHeaders } from "./auth.js";
 
+export type AuthHeaderOverrides = {
+  apiKey?: string;
+  apiUsername?: string;
+  userApiKey?: string;
+  userApiClientId?: string;
+};
+
 export async function executeApiRequest(input: {
   args: ParsedArgs;
   baseUrl?: string;
@@ -259,7 +266,7 @@ export function defaultAttachmentOutput(url: string, response: Response): string
 }
 
 export async function downloadAttachment(args: ParsedArgs, url: string): Promise<void> {
-  const headers = new Headers(buildAuthHeaders(args));
+  const headers = buildHeaders(args);
   const response = await fetch(url, { headers });
   if (!response.ok) {
     const errorText = await response.text().catch(() => "");
@@ -268,10 +275,99 @@ export async function downloadAttachment(args: ParsedArgs, url: string): Promise
     );
   }
 
-  const output = getOption(args, "output") ?? defaultAttachmentOutput(url, response);
   const bytes = new Uint8Array(await response.arrayBuffer());
-  const outputPath = resolve(output);
+  const outputPath = resolve(
+    getOption(args, "output") ?? defaultAttachmentOutput(url, response),
+  );
   await mkdir(dirname(outputPath), { recursive: true });
   await writeFile(outputPath, bytes);
   console.log(outputPath);
+}
+
+export async function requestJson<T>(input: {
+  args: ParsedArgs;
+  baseUrl?: string;
+  path: string;
+  method?: string;
+  query?: URLSearchParams;
+  headers?: Record<string, string>;
+  authOverrides?: AuthHeaderOverrides;
+  body?: BodyInit;
+}): Promise<T> {
+  const url = new URL(resolvePath(input.baseUrl, input.path));
+  for (const [key, value] of input.query?.entries() ?? []) {
+    url.searchParams.append(key, value);
+  }
+
+  const response = await fetch(url, {
+    method: input.method?.toUpperCase() ?? "GET",
+    headers: buildHeaders(input.args, input.headers, input.authOverrides),
+    body: input.body,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => "");
+    throw new Error(
+      `Request failed: ${response.status} ${response.statusText}${errorText ? ` - ${errorText}` : ""}`,
+    );
+  }
+
+  return response.json() as Promise<T>;
+}
+
+export async function downloadToPath(input: {
+  args: ParsedArgs;
+  url: string;
+  outputPath: string;
+  headers?: Record<string, string>;
+  authOverrides?: AuthHeaderOverrides;
+}): Promise<string> {
+  const response = await fetch(input.url, {
+    headers: buildHeaders(input.args, input.headers, input.authOverrides),
+  });
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => "");
+    throw new Error(
+      `Download failed: ${response.status} ${response.statusText}${errorText ? ` - ${errorText}` : ""}`,
+    );
+  }
+
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  const outputPath = resolve(input.outputPath);
+  await mkdir(dirname(outputPath), { recursive: true });
+  await writeFile(outputPath, bytes);
+  return outputPath;
+}
+
+function buildHeaders(
+  args: ParsedArgs,
+  headers?: Record<string, string>,
+  authOverrides?: AuthHeaderOverrides,
+): Headers {
+  return new Headers({
+    ...buildAuthHeaders(args),
+    ...authHeaderOverridesToRecord(authOverrides),
+    ...(headers ?? {}),
+  });
+}
+
+function authHeaderOverridesToRecord(
+  overrides?: AuthHeaderOverrides,
+): Record<string, string> {
+  const headers: Record<string, string> = {};
+
+  if (overrides?.apiKey) {
+    headers["Api-Key"] = overrides.apiKey;
+  }
+  if (overrides?.apiUsername) {
+    headers["Api-Username"] = overrides.apiUsername;
+  }
+  if (overrides?.userApiKey) {
+    headers["User-Api-Key"] = overrides.userApiKey;
+  }
+  if (overrides?.userApiClientId) {
+    headers["User-Api-Client-Id"] = overrides.userApiClientId;
+  }
+
+  return headers;
 }

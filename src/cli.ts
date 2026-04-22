@@ -18,6 +18,7 @@ import {
   renderOperationDescription,
   resolveOpenApiPath,
 } from "./request.js";
+import { runConversationsExport } from "./conversations.js";
 import { runPostsCreate, runPostsUpdate } from "./posts.js";
 
 function printHelp(): void {
@@ -29,6 +30,7 @@ function printHelp(): void {
   discourse-cli api call <METHOD> <path> [request options]
   discourse-cli posts create [post options]
   discourse-cli posts update [post options]
+  discourse-cli conversations export --user-id <id|username> [conversation options]
   discourse-cli attachment download <url> [--output <path>]
 
 Common request options:
@@ -55,6 +57,13 @@ Post options:
   --raw-file <path>
   --edit-reason <text>
   --bypass-bump
+
+Conversation options:
+  --user-id <id|username>
+  --user <username>
+  --output-dir <path>
+  --page-size <count>
+  --skip-attachments
 
 Environment:
   DISCOURSE_BASE_URL / DISCOURSE_URL
@@ -239,6 +248,11 @@ async function main(): Promise<void> {
 
   if (resource === "posts" && action === "update") {
     await runPostsUpdate(args);
+    return;
+  }
+
+  if (resource === "conversations" && action === "export") {
+    await runConversationsExport(args);
     return;
   }
 
