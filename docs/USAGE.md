@@ -13,6 +13,7 @@
 - `api call`
 - `posts create`
 - `posts update`
+- `conversations export`
 - `attachment download`
 
 이 프로젝트는 아직 모든 기능을 사람이 읽기 쉬운 전용 서브커맨드로 나누지는 않았다.
@@ -77,6 +78,7 @@ discourse-cli api run <operationId> [request options]
 discourse-cli api call <METHOD> <path> [request options]
 discourse-cli posts create [post options]
 discourse-cli posts update [post options]
+discourse-cli conversations export --user-id <id|username> [conversation options]
 discourse-cli attachment download <url> [--output <path>]
 ```
 
@@ -95,6 +97,41 @@ discourse-cli attachment download <url> [--output <path>]
 - `--form key=value`
 - `--file field=/absolute/path/to/file`
 - `--output <path>`
+
+## 대화 세션 추출
+
+특정 사용자가 글을 남긴 모든 topic을 topic별 폴더로 export한다.
+
+```bash
+discourse-cli conversations export \
+  --user hyeonekim \
+  --output-dir ./exports/conversations
+```
+
+추가 옵션:
+
+- `--user-id <id|username>`: 대상 사용자 식별자. 숫자 id 또는 username 허용
+- `--user <username>`: username 별칭 옵션
+- `--output-dir <path>`: export 루트 디렉터리. 기본값 `exports/conversations`
+- `--page-size <count>`: 세션 목록 페이지 크기. 기본값 `40`
+- `--skip-attachments`: 첨부 다운로드 생략
+
+출력 구조:
+
+- 루트: `<output-dir>/<userId>-<username>/`
+- 세션: `<sessionId>-<session-title>-<start-date>-<last-date>/`
+- 세션 내부:
+  - `conversation.json`
+  - `transcript.md`
+  - `attachments/`
+
+동작 방식:
+
+- 먼저 `/admin/users/:id.json` 또는 username profile endpoint로 사용자를 해석한다.
+- 그 다음 공개 게시판에서는 `user_actions`를 이용해 사용자가 글을 남긴 topic 목록을 가져온다.
+- 개인 메시지 topic도 함께 수집한다.
+- 각 세션은 topic 상세와 post chunk를 모두 받아서 저장한다.
+- 첨부는 cooked HTML에서 Discourse upload/artifact 링크를 추출해 인증된 요청으로 다운로드한다. 실패한 파일이 있어도 본문 export는 계속 진행한다.
 
 ## 포스트 작성
 
