@@ -1,7 +1,5 @@
 # discourse-cli
 
-<h1 align="center"><font color="red">절대 PUBLIC으로 전환하지 말 것, 필요시 새로운 리포지토리 생성</font></h1>
-
 Discourse OpenAPI 기반 범용 CLI다.
 
 ## 현재 범위
